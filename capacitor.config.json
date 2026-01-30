@@ -1,0 +1,8 @@
+{
+  "appId": "com.sortex.game",
+  "appName": "Crystal Grid",
+  "webDir": "src",
+  "server": {
+    "startPath": "/crystal-grid.html"
+  }
+}

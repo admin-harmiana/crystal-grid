@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crystal Grid Sound Audition v8 — Melodic</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #0a0a12; color: #e0e0e0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  padding: 20px; max-width: 600px; margin: 0 auto; padding-bottom: 80px;
+}
+h1 { font-size: 1.3rem; color: #b388ff; margin-bottom: 6px; }
+p.desc { font-size: 0.8rem; color: #888; margin-bottom: 16px; }
+.card {
+  background: #16162a; border: 1px solid #2a2a4a; border-radius: 10px;
+  padding: 14px; margin-bottom: 10px; display: flex; align-items: center;
+  gap: 14px; transition: border-color 0.2s;
+}
+.card:active, .card.playing { border-color: #b388ff; }
+.card .num {
+  width: 36px; height: 36px; background: #b388ff22; color: #b388ff;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.85rem; flex-shrink: 0;
+}
+.card .info { flex: 1; }
+.card .name { font-weight: 600; font-size: 0.95rem; }
+.card .detail { font-size: 0.75rem; color: #999; margin-top: 3px; }
+.play-btn {
+  width: 44px; height: 44px; background: #b388ff; color: #0a0a12;
+  border: none; border-radius: 50%; font-size: 1.2rem; cursor: pointer;
+  flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+}
+.play-btn:active { transform: scale(0.92); }
+.section-label {
+  display: inline-block; background: #b388ff22; color: #b388ff;
+  padding: 3px 10px; border-radius: 20px; font-size: 0.7rem;
+  text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;
+}
+.divider { height: 1px; background: #2a2a4a; margin: 28px 0; }
+.current-tag {
+  display: inline-block; background: #ff572222; color: #ff5722;
+  font-size: 0.6rem; padding: 1px 6px; border-radius: 8px;
+  margin-left: 6px; text-transform: uppercase;
+}
+</style>
+</head>
+<body>
+<h1>Crystal Grid Sound Audition v8</h1>
+<p class="desc">Melodic pentatonic sounds. Ascending chimes, harmonic rewards, musical tension/resolution. Based on Block Blast / Candy Crush / Tetris Effect research.</p>
+
+<!-- ===== GRAB ===== -->
+<div class="section-label">Grab</div>
+
+<div class="card" id="card-g0">
+  <div class="num">G0</div>
+  <div class="info">
+    <div class="name">Quick Swoosh</div>
+    <div class="detail">Noise sweep 300&rarr;1200Hz upward. Light, airy lift-off. 60ms.</div>
+  </div>
+  <button class="play-btn" onclick="playGrab(0)">&#9654;</button>
+</div>
+
+<div class="card" id="card-g1">
+  <div class="num">G1</div>
+  <div class="info">
+    <div class="name">Tonal Lift</div>
+    <div class="detail">Sine sweep C4&rarr;E5 with soft attack. Musical pick-up. 70ms.</div>
+  </div>
+  <button class="play-btn" onclick="playGrab(1)">&#9654;</button>
+</div>
+
+<div class="card" id="card-g2">
+  <div class="num">G2</div>
+  <div class="info">
+    <div class="name">Chime Pluck</div>
+    <div class="detail">Quick pentatonic double-note (C5+E5). Bright pluck feel. 65ms.</div>
+  </div>
+  <button class="play-btn" onclick="playGrab(2)">&#9654;</button>
+</div>
+
+<div class="card" id="card-g3">
+  <div class="num">G3</div>
+  <div class="info">
+    <div class="name">Air Whisp</div>
+    <div class="detail">Noise sweep 500&rarr;1500Hz fast. Sharp but quiet. 45ms.</div>
+  </div>
+  <button class="play-btn" onclick="playGrab(3)">&#9654;</button>
+</div>
+
+<div class="card" id="card-g4">
+  <div class="num">G4</div>
+  <div class="info">
+    <div class="name">Ping Rise</div>
+    <div class="detail">Rising sine G4&rarr;C5 + soft noise layer. Musical whoosh. 80ms.</div>
+  </div>
+  <button class="play-btn" onclick="playGrab(4)">&#9654;</button>
+</div>
+
+<div class="divider"></div>
+
+<!-- ===== PLACEMENT ===== -->
+<div class="section-label">Placement</div>
+
+<div class="card" id="card-p0">
+  <div class="num">P0</div>
+  <div class="info">
+    <div class="name">Chime Settle</div>
+    <div class="detail">3 descending pentatonic chimes E5&rarr;D5&rarr;C5. Crystalline lock-in. 120ms.</div>
+  </div>
+  <button class="play-btn" onclick="playPlacement(0)">&#9654;</button>
+</div>
+
+<div class="card" id="card-p1">
+  <div class="num">P1</div>
+  <div class="info">
+    <div class="name">Marimba Drop</div>
+    <div class="detail">3 warm triangle ticks G4&rarr;E4&rarr;C4. Wooden marimba feel. 130ms.</div>
+  </div>
+  <button class="play-btn" onclick="playPlacement(1)">&#9654;</button>
+</div>
+
+<div class="card" id="card-p2">
+  <div class="num">P2</div>
+  <div class="info">
+    <div class="name">Bell Tap</div>
+    <div class="detail">3 bright sine+harmonic taps A5&rarr;G5&rarr;E5. Bell-like settle. 110ms.</div>
+  </div>
+  <button class="play-btn" onclick="playPlacement(2)">&#9654;</button>
+</div>
+
+<div class="card" id="card-p3">
+  <div class="num">P3</div>
+  <div class="info">
+    <div class="name">Glass Click</div>
+    <div class="detail">3 inharmonic glass chimes with octave shimmer. Delicate. 140ms.</div>
+  </div>
+  <button class="play-btn" onclick="playPlacement(3)">&#9654;</button>
+</div>
+
+<div class="card" id="card-p4">
+  <div class="num">P4</div>
+  <div class="info">
+    <div class="name">Xylophone Snap</div>
+    <div class="detail">3 square+LP ticks D5&rarr;C5&rarr;A4. Percussive, pitched. 100ms.</div>
+  </div>
+  <button class="play-btn" onclick="playPlacement(4)">&#9654;</button>
+</div>
+
+<div class="divider"></div>
+
+<!-- ===== LINE CLEAR ===== -->
+<div class="section-label">Line Clear</div>
+
+<div class="card" id="card-l0">
+  <div class="num">L0</div>
+  <div class="info">
+    <div class="name">Pentatonic Cascade</div>
+    <div class="detail">8 cells ascending C4&rarr;D&rarr;E&rarr;G&rarr;A&rarr;C5&rarr;D5&rarr;E5. Classic reward arpeggio. 500ms.</div>
+  </div>
+  <button class="play-btn" onclick="playLineClear(0)">&#9654;</button>
+</div>
+
+<div class="card" id="card-l1">
+  <div class="num">L1</div>
+  <div class="info">
+    <div class="name">Sparkle Run</div>
+    <div class="detail">8 ascending chimes with shimmer harmonics + reverb bloom. Candy Crush style. 600ms.</div>
+  </div>
+  <button class="play-btn" onclick="playLineClear(1)">&#9654;</button>
+</div>
+
+<div class="card" id="card-l2">
+  <div class="num">L2</div>
+  <div class="info">
+    <div class="name">Harp Gliss</div>
+    <div class="detail">8 cells as harp glissando (triangle wave) up pentatonic scale + gentle pad. 550ms.</div>
+  </div>
+  <button class="play-btn" onclick="playLineClear(2)">&#9654;</button>
+</div>
+
+<div class="card" id="card-l3">
+  <div class="num">L3</div>
+  <div class="info">
+    <div class="name">Celesta Rise</div>
+    <div class="detail">8 bell-like tones ascending with octave doubles. Bright, magical. 500ms.</div>
+  </div>
+  <button class="play-btn" onclick="playLineClear(3)">&#9654;</button>
+</div>
+
+<div class="card" id="card-l4">
+  <div class="num">L4</div>
+  <div class="info">
+    <div class="name">Chord Bloom</div>
+    <div class="detail">Ascending notes build into full C major chord at peak + sparkle tail. 700ms.</div>
+  </div>
+  <button class="play-btn" onclick="playLineClear(4)">&#9654;</button>
+</div>
+
+<div class="divider"></div>
+
+<!-- ===== RESONANCE DETECT ===== -->
+<div class="section-label">Resonance Detect</div>
+
+<div class="card" id="card-r0">
+  <div class="num">R0</div>
+  <div class="info">
+    <div class="name">Alert Chime</div>
+    <div class="detail">C5&rarr;E5 two-note ascending motif. Clean doorbell ping. 200ms.</div>
+  </div>
+  <button class="play-btn" onclick="playResonanceDetect(0)">&#9654;</button>
+</div>
+
+<div class="card" id="card-r1">
+  <div class="num">R1</div>
+  <div class="info">
+    <div class="name">Crystal Alert</div>
+    <div class="detail">E5&rarr;G5&rarr;A5 three-note rising motif + shimmer. Magical awareness. 250ms.</div>
+  </div>
+  <button class="play-btn" onclick="playResonanceDetect(1)">&#9654;</button>
+</div>
+
+<div class="card" id="card-r2">
+  <div class="num">R2</div>
+  <div class="info">
+    <div class="name">Harmonic Ping</div>
+    <div class="detail">C5 + octave harmonic (C6) + fifth (G5). Rich bell cluster. 220ms.</div>
+  </div>
+  <button class="play-btn" onclick="playResonanceDetect(2)">&#9654;</button>
+</div>
+
+<div class="card" id="card-r3">
+  <div class="num">R3</div>
+  <div class="info">
+    <div class="name">Sparkle Rise</div>
+    <div class="detail">Quick ascending triplet G5&rarr;A5&rarr;C6 with high shimmer. Exciting alert. 200ms.</div>
+  </div>
+  <button class="play-btn" onclick="playResonanceDetect(3)">&#9654;</button>
+</div>
+
+<div class="card" id="card-r4">
+  <div class="num">R4</div>
+  <div class="info">
+    <div class="name">Bell Sweep</div>
+    <div class="detail">Rising sine sweep landing on E5 + harmonic bloom. Warm alert. 280ms.</div>
+  </div>
+  <button class="play-btn" onclick="playResonanceDetect(4)">&#9654;</button>
+</div>
+
+<div class="divider"></div>
+
+<!-- ===== RESONANCE DETONATE ===== -->
+<div class="section-label">Resonance Detonate</div>
+
+<div class="card" id="card-d0">
+  <div class="num">D0</div>
+  <div class="info">
+    <div class="name">Major Chord Burst</div>
+    <div class="detail">C major chord bloom (C4+E4+G4+C5) &rarr; descending sparkle arpeggio &rarr; sub bass. 1500ms.</div>
+  </div>
+  <button class="play-btn" onclick="playResonanceDetonate(0)">&#9654;</button>
+</div>
+
+<div class="card" id="card-d1">
+  <div class="num">D1</div>
+  <div class="info">
+    <div class="name">Cascade Resolution</div>
+    <div class="detail">Ascending tension (C&rarr;D&rarr;E&rarr;G) &rarr; full chord resolve &rarr; descending coins. 1800ms.</div>
+  </div>
+  <button class="play-btn" onclick="playResonanceDetonate(1)">&#9654;</button>
+</div>
+
+<div class="card" id="card-d2">
+  <div class="num">D2</div>
+  <div class="info">
+    <div class="name">Harmonic Explosion</div>
+    <div class="detail">Sub impact &rarr; C major spread chord &rarr; rapid descending pentatonic rain. 1600ms.</div>
+  </div>
+  <button class="play-btn" onclick="playResonanceDetonate(2)">&#9654;</button>
+</div>
+
+<div class="card" id="card-d3">
+  <div class="num">D3</div>
+  <div class="info">
+    <div class="name">Crystal Shatter</div>
+    <div class="detail">High cluster burst &rarr; cascading broken-chord fragments &rarr; deep resolve. 2000ms.</div>
+  </div>
+  <button class="play-btn" onclick="playResonanceDetonate(3)">&#9654;</button>
+</div>
+
+<div class="card" id="card-d4">
+  <div class="num">D4</div>
+  <div class="info">
+    <div class="name">Power Chord</div>
+    <div class="detail">Swell &rarr; massive open fifth (C3+G3+C4+G4) &rarr; octave cascade &rarr; sub rumble. 1800ms.</div>
+  </div>
+  <button class="play-btn" onclick="playResonanceDetonate(4)">&#9654;</button>
+</div>
+
+<script>
+let audioCtx = null;
+let reverbSend = null;
+
+function ensureAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+}
+
+function getReverbSend() {
+  if (reverbSend && audioCtx) return reverbSend;
+  if (!audioCtx) return null;
+  const input = audioCtx.createGain();
+  const wet = audioCtx.createGain();
+  wet.gain.value = 0.50;
+  const tapConfigs = [
+    { time: 0.067, fb: 0.45 }, { time: 0.113, fb: 0.40 },
+    { time: 0.179, fb: 0.35 }, { time: 0.271, fb: 0.30 }
+  ];
+  for (const cfg of tapConfigs) {
+    const delay = audioCtx.createDelay(1.0);
+    delay.delayTime.value = cfg.time;
+    const hs = audioCtx.createBiquadFilter();
+    hs.type = 'highshelf'; hs.frequency.value = 3000; hs.gain.value = -3;
+    const fbGain = audioCtx.createGain();
+    fbGain.gain.value = cfg.fb;
+    input.connect(delay); delay.connect(hs); hs.connect(fbGain);
+    fbGain.connect(delay); delay.connect(wet);
+  }
+  wet.connect(audioCtx.destination);
+  reverbSend = input;
+  return input;
+}
+
+function connectWithReverb(node, wetLevel) {
+  if (!audioCtx) return;
+  node.connect(audioCtx.destination);
+  const reverb = getReverbSend();
+  if (reverb) {
+    const wetGain = audioCtx.createGain();
+    wetGain.gain.value = wetLevel;
+    node.connect(wetGain); wetGain.connect(reverb);
+  }
+}
+
+function makeNoise(duration) {
+  const buf = audioCtx.createBuffer(1, audioCtx.sampleRate * duration, audioCtx.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  const src = audioCtx.createBufferSource();
+  src.buffer = buf;
+  return src;
+}
+
+function flash(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.add('playing');
+  setTimeout(() => el.classList.remove('playing'), 400);
+}
+
+// =========================================================
+// PENTATONIC SCALE CONSTANTS
+// C major pentatonic: C - D - E - G - A
+// =========================================================
+const PENTA = {
+  C3: 130.81, D3: 146.83, E3: 164.81, G3: 196.00, A3: 220.00,
+  C4: 261.63, D4: 293.66, E4: 329.63, G4: 392.00, A4: 440.00,
+  C5: 523.25, D5: 587.33, E5: 659.25, G5: 783.99, A5: 880.00,
+  C6: 1046.50, D6: 1174.66, E6: 1318.51
+};
+
+// Ascending pentatonic sequence across 2 octaves (for line clears)
+const PENTA_UP = [
+  PENTA.C4, PENTA.D4, PENTA.E4, PENTA.G4,
+  PENTA.A4, PENTA.C5, PENTA.D5, PENTA.E5
+];
+
+// Descending pentatonic (for sparkle rain / detonate tails)
+const PENTA_DOWN = [
+  PENTA.E6, PENTA.D6, PENTA.C6, PENTA.A5,
+  PENTA.G5, PENTA.E5, PENTA.D5, PENTA.C5,
+  PENTA.A4, PENTA.G4, PENTA.E4, PENTA.D4, PENTA.C4
+];
+
+// =========================================================
+// HELPER: Play a single sine chime (the bread and butter)
+// =========================================================
+function chime(freq, time, dur, vol, reverbWet) {
+  const osc = audioCtx.createOscillator();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(freq, time);
+  const g = audioCtx.createGain();
+  g.gain.setValueAtTime(0.001, time);
+  g.gain.linearRampToValueAtTime(vol, time + 0.003); // 3ms attack
+  g.gain.exponentialRampToValueAtTime(0.001, time + dur);
+  osc.connect(g);
+  connectWithReverb(g, reverbWet || 0.25);
+  osc.start(time);
+  osc.stop(time + dur);
+}
+
+// Chime with octave harmonic (brighter, bell-like)
+function bellChime(freq, time, dur, vol, reverbWet) {
+  chime(freq, time, dur, vol, reverbWet || 0.30);
+  chime(freq * 2, time, dur * 0.6, vol * 0.3, reverbWet || 0.30);
+  chime(freq * 3, time, dur * 0.35, vol * 0.12, reverbWet || 0.30);
+}
+
+// Warm triangle chime (marimba-like)
+function warmChime(freq, time, dur, vol, reverbWet) {
+  const osc = audioCtx.createOscillator();
+  osc.type = 'triangle';
+  osc.frequency.setValueAtTime(freq, time);
+  const lp = audioCtx.createBiquadFilter();
+  lp.type = 'lowpass';
+  lp.frequency.setValueAtTime(freq * 4, time);
+  lp.frequency.exponentialRampToValueAtTime(freq * 1.5, time + dur);
+  const g = audioCtx.createGain();
+  g.gain.setValueAtTime(0.001, time);
+  g.gain.linearRampToValueAtTime(vol, time + 0.003);
+  g.gain.exponentialRampToValueAtTime(0.001, time + dur);
+  osc.connect(lp);
+  lp.connect(g);
+  connectWithReverb(g, reverbWet || 0.20);
+  osc.start(time);
+  osc.stop(time + dur);
+}
+
+// Percussive chime (square wave + lowpass, xylophone-like)
+function percChime(freq, time, dur, vol, reverbWet) {
+  const osc = audioCtx.createOscillator();
+  osc.type = 'square';
+  osc.frequency.setValueAtTime(freq, time);
+  const lp = audioCtx.createBiquadFilter();
+  lp.type = 'lowpass';
+  lp.frequency.setValueAtTime(freq * 3, time);
+  lp.frequency.exponentialRampToValueAtTime(freq, time + dur * 0.3);
+  const g = audioCtx.createGain();
+  g.gain.setValueAtTime(0.001, time);
+  g.gain.linearRampToValueAtTime(vol, time + 0.002);
+  g.gain.exponentialRampToValueAtTime(0.001, time + dur);
+  osc.connect(lp);
+  lp.connect(g);
+  connectWithReverb(g, reverbWet || 0.20);
+  osc.start(time);
+  osc.stop(time + dur);
+}
+
+// Sub bass sine (for detonates)
+function subBass(freq, time, dur, vol) {
+  const osc = audioCtx.createOscillator();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(freq, time);
+  const g = audioCtx.createGain();
+  g.gain.setValueAtTime(0.001, time);
+  g.gain.linearRampToValueAtTime(vol, time + 0.05);
+  g.gain.setValueAtTime(vol, time + dur * 0.4);
+  g.gain.exponentialRampToValueAtTime(0.001, time + dur);
+  osc.connect(g);
+  g.connect(audioCtx.destination); // sub bass goes dry
+  osc.start(time);
+  osc.stop(time + dur);
+}
+
+// High sparkle (very short bright ping)
+function sparkle(freq, time, vol) {
+  const osc = audioCtx.createOscillator();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(freq, time);
+  const g = audioCtx.createGain();
+  g.gain.setValueAtTime(vol, time);
+  g.gain.exponentialRampToValueAtTime(0.001, time + 0.04);
+  osc.connect(g);
+  connectWithReverb(g, 0.40);
+  osc.start(time);
+  osc.stop(time + 0.04);
+}
+
+// =========================================================
+// GRAB — whoosh / swoosh sounds
+// G0 and G3 are noise-based (unchanged), G1/G2/G4 are tonal
+// =========================================================
+function playGrab(variant) {
+  ensureAudio();
+  const t = audioCtx.currentTime;
+  flash('card-g' + variant);
+
+  if (variant === 0) {
+    // G0: Quick Swoosh — Noise BP sweep 300->1200Hz. 60ms.
+    const n = makeNoise(0.060);
+    const bp = audioCtx.createBiquadFilter();
+    bp.type = 'bandpass'; bp.Q.value = 4;
+    bp.frequency.setValueAtTime(300, t);
+    bp.frequency.exponentialRampToValueAtTime(1200, t + 0.060);
+    const g = audioCtx.createGain();
+    g.gain.setValueAtTime(0.10, t);
+    g.gain.setValueAtTime(0.10, t + 0.020);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.060);
+    n.connect(bp); bp.connect(g); connectWithReverb(g, 0.15);
+    n.start(t); n.stop(t + 0.060);
+
+  } else if (variant === 1) {
+    // G1: Tonal Lift — sine sweep C4->E5 with soft attack
+    const osc = audioCtx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(PENTA.C4, t);
+    osc.frequency.exponentialRampToValueAtTime(PENTA.E5, t + 0.070);
+    const g = audioCtx.createGain();
+    g.gain.setValueAtTime(0.07, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.070);
+    osc.connect(g); connectWithReverb(g, 0.20);
+    osc.start(t); osc.stop(t + 0.070);
+
+  } else if (variant === 2) {
+    // G2: Chime Pluck — quick C5+E5 double note
+    chime(PENTA.C5, t, 0.060, 0.07, 0.20);
+    chime(PENTA.E5, t + 0.008, 0.055, 0.06, 0.20);
+
+  } else if (variant === 3) {
+    // G3: Air Whisp — fast noise sweep
+    const n = makeNoise(0.045);
+    const bp = audioCtx.createBiquadFilter();
+    bp.type = 'bandpass'; bp.Q.value = 4;
+    bp.frequency.setValueAtTime(500, t);
+    bp.frequency.exponentialRampToValueAtTime(1500, t + 0.045);
+    const g = audioCtx.createGain();
+    g.gain.setValueAtTime(0.08, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.045);
+    n.connect(bp); bp.connect(g); connectWithReverb(g, 0.15);
+    n.start(t); n.stop(t + 0.045);
+
+  } else if (variant === 4) {
+    // G4: Ping Rise — rising sine G4->C5 + soft noise
+    const osc = audioCtx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(PENTA.G4, t);
+    osc.frequency.exponentialRampToValueAtTime(PENTA.C5, t + 0.080);
+    const g = audioCtx.createGain();
+    g.gain.setValueAtTime(0.06, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.080);
+    osc.connect(g); connectWithReverb(g, 0.20);
+    osc.start(t); osc.stop(t + 0.080);
+    // Soft noise layer
+    const n = makeNoise(0.050);
+    const bp = audioCtx.createBiquadFilter();
+    bp.type = 'bandpass'; bp.Q.value = 3;
+    bp.frequency.setValueAtTime(400, t);
+    bp.frequency.exponentialRampToValueAtTime(1000, t + 0.050);
+    const ng = audioCtx.createGain();
+    ng.gain.setValueAtTime(0.03, t);
+    ng.gain.exponentialRampToValueAtTime(0.001, t + 0.050);
+    n.connect(bp); bp.connect(ng); connectWithReverb(ng, 0.15);
+    n.start(t); n.stop(t + 0.050);
+  }
+}
+
+// =========================================================
+// PLACEMENT — 100-150ms, 3 descending pentatonic chimes
+// Short, pitched, non-fatiguing. Sine-based for warmth.
+// =========================================================
+function playPlacement(variant) {
+  ensureAudio();
+  const t = audioCtx.currentTime;
+  flash('card-p' + variant);
+
+  if (variant === 0) {
+    // P0: Chime Settle — 3 descending sine chimes E5->D5->C5
+    chime(PENTA.E5, t,         0.060, 0.08, 0.18);
+    chime(PENTA.D5, t + 0.035, 0.060, 0.09, 0.18);
+    chime(PENTA.C5, t + 0.070, 0.070, 0.10, 0.18);
+
+  } else if (variant === 1) {
+    // P1: Marimba Drop — warm triangle ticks G4->E4->C4
+    warmChime(PENTA.G4, t,         0.055, 0.09, 0.15);
+    warmChime(PENTA.E4, t + 0.040, 0.055, 0.10, 0.15);
+    warmChime(PENTA.C4, t + 0.080, 0.065, 0.11, 0.15);
+
+  } else if (variant === 2) {
+    // P2: Bell Tap — bright bell chimes A5->G5->E5
+    bellChime(PENTA.A5, t,         0.050, 0.07, 0.22);
+    bellChime(PENTA.G5, t + 0.030, 0.050, 0.08, 0.22);
+    bellChime(PENTA.E5, t + 0.060, 0.060, 0.09, 0.22);
+
+  } else if (variant === 3) {
+    // P3: Glass Click — inharmonic glass chimes with octave shimmer
+    const freqs = [PENTA.E5, PENTA.D5, PENTA.C5];
+    freqs.forEach((f, i) => {
+      const time = t + i * 0.040;
+      chime(f, time, 0.055, 0.08 + i * 0.01, 0.25);
+      chime(f * 2, time, 0.035, 0.03, 0.30); // octave shimmer
+    });
+
+  } else if (variant === 4) {
+    // P4: Xylophone Snap — percussive pitched ticks D5->C5->A4
+    percChime(PENTA.D5, t,         0.040, 0.09, 0.15);
+    percChime(PENTA.C5, t + 0.030, 0.040, 0.10, 0.15);
+    percChime(PENTA.A4, t + 0.060, 0.045, 0.11, 0.15);
+  }
+}
+
+// =========================================================
+// LINE CLEAR — 400-700ms ascending pentatonic cascade
+// Each cell plays the next note up the scale. Musical reward.
+// =========================================================
+function playLineClear(variant) {
+  ensureAudio();
+  const t = audioCtx.currentTime;
+  flash('card-l' + variant);
+
+  if (variant === 0) {
+    // L0: Pentatonic Cascade — 8 ascending sine chimes, classic reward
+    const spacing = 0.055;
+    PENTA_UP.forEach((freq, i) => {
+      chime(freq, t + i * spacing, 0.12, 0.08 + i * 0.005, 0.30);
+    });
+
+  } else if (variant === 1) {
+    // L1: Sparkle Run — ascending chimes + octave harmonics + shimmer sparkles
+    const spacing = 0.065;
+    PENTA_UP.forEach((freq, i) => {
+      bellChime(freq, t + i * spacing, 0.14, 0.07 + i * 0.004, 0.35);
+      // Sparkle on every other note
+      if (i % 2 === 1) {
+        sparkle(freq * 4, t + i * spacing + 0.02, 0.03);
+      }
+    });
+
+  } else if (variant === 2) {
+    // L2: Harp Gliss — triangle wave ascending + gentle pad underneath
+    const spacing = 0.060;
+    PENTA_UP.forEach((freq, i) => {
+      warmChime(freq, t + i * spacing, 0.15, 0.08 + i * 0.003, 0.28);
+    });
+    // Gentle pad (C4 + E4 sustained underneath)
+    const pad1 = audioCtx.createOscillator();
+    pad1.type = 'sine';
+    pad1.frequency.value = PENTA.C4;
+    const pg1 = audioCtx.createGain();
+    pg1.gain.setValueAtTime(0.001, t);
+    pg1.gain.linearRampToValueAtTime(0.03, t + 0.10);
+    pg1.gain.setValueAtTime(0.03, t + 0.35);
+    pg1.gain.exponentialRampToValueAtTime(0.001, t + 0.60);
+    pad1.connect(pg1); connectWithReverb(pg1, 0.40);
+    pad1.start(t); pad1.stop(t + 0.60);
+
+    const pad2 = audioCtx.createOscillator();
+    pad2.type = 'sine';
+    pad2.frequency.value = PENTA.E4;
+    const pg2 = audioCtx.createGain();
+    pg2.gain.setValueAtTime(0.001, t);
+    pg2.gain.linearRampToValueAtTime(0.02, t + 0.10);
+    pg2.gain.setValueAtTime(0.02, t + 0.35);
+    pg2.gain.exponentialRampToValueAtTime(0.001, t + 0.60);
+    pad2.connect(pg2); connectWithReverb(pg2, 0.40);
+    pad2.start(t); pad2.stop(t + 0.60);
+
+  } else if (variant === 3) {
+    // L3: Celesta Rise — bell-like tones ascending with octave doubles
+    const spacing = 0.055;
+    PENTA_UP.forEach((freq, i) => {
+      bellChime(freq, t + i * spacing, 0.12, 0.06 + i * 0.005, 0.32);
+    });
+
+  } else if (variant === 4) {
+    // L4: Chord Bloom — ascending notes that build into full chord at peak
+    const spacing = 0.060;
+    // First 5 notes ascending (building tension)
+    for (let i = 0; i < 5; i++) {
+      chime(PENTA_UP[i], t + i * spacing, 0.10, 0.07 + i * 0.003, 0.28);
+    }
+    // Full C major chord bloom at peak
+    const chordTime = t + 5 * spacing;
+    const chordNotes = [PENTA.C4, PENTA.E4, PENTA.G4, PENTA.C5];
+    chordNotes.forEach((freq, i) => {
+      const osc = audioCtx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      const g = audioCtx.createGain();
+      g.gain.setValueAtTime(0.001, chordTime);
+      g.gain.linearRampToValueAtTime(0.06, chordTime + 0.02);
+      g.gain.setValueAtTime(0.06, chordTime + 0.15);
+      g.gain.exponentialRampToValueAtTime(0.001, chordTime + 0.40);
+      osc.connect(g); connectWithReverb(g, 0.45);
+      osc.start(chordTime); osc.stop(chordTime + 0.40);
+    });
+    // Sparkle tail after chord
+    for (let i = 0; i < 4; i++) {
+      sparkle(PENTA_DOWN[i], chordTime + 0.08 + i * 0.03, 0.04);
+    }
+  }
+}
+
+// =========================================================
+// RESONANCE DETECT — 200-300ms, bright ascending alert motif
+// 2-3 note pentatonic phrases, chime-based
+// =========================================================
+function playResonanceDetect(variant) {
+  ensureAudio();
+  const t = audioCtx.currentTime;
+  flash('card-r' + variant);
+
+  if (variant === 0) {
+    // R0: Alert Chime — C5->E5 two-note ascending
+    chime(PENTA.C5, t, 0.12, 0.10, 0.30);
+    chime(PENTA.E5, t + 0.08, 0.14, 0.11, 0.30);
+
+  } else if (variant === 1) {
+    // R1: Crystal Alert — E5->G5->A5 three-note rising + shimmer
+    chime(PENTA.E5, t, 0.10, 0.09, 0.32);
+    chime(PENTA.G5, t + 0.06, 0.10, 0.10, 0.32);
+    bellChime(PENTA.A5, t + 0.12, 0.14, 0.11, 0.35);
+
+  } else if (variant === 2) {
+    // R2: Harmonic Ping — C5 + G5 + C6 simultaneous (rich bell)
+    bellChime(PENTA.C5, t, 0.18, 0.09, 0.35);
+    chime(PENTA.G5, t + 0.005, 0.15, 0.07, 0.35);
+    chime(PENTA.C6, t + 0.010, 0.12, 0.05, 0.35);
+
+  } else if (variant === 3) {
+    // R3: Sparkle Rise — fast ascending triplet G5->A5->C6
+    chime(PENTA.G5, t, 0.08, 0.09, 0.30);
+    chime(PENTA.A5, t + 0.045, 0.08, 0.10, 0.30);
+    bellChime(PENTA.C6, t + 0.090, 0.12, 0.11, 0.35);
+    sparkle(PENTA.E6, t + 0.12, 0.04);
+
+  } else if (variant === 4) {
+    // R4: Bell Sweep — rising sine landing on E5 + harmonic bloom
+    const osc = audioCtx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(PENTA.C4, t);
+    osc.frequency.exponentialRampToValueAtTime(PENTA.E5, t + 0.12);
+    const g = audioCtx.createGain();
+    g.gain.setValueAtTime(0.06, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.20);
+    osc.connect(g); connectWithReverb(g, 0.35);
+    osc.start(t); osc.stop(t + 0.20);
+    // Harmonic bloom on arrival
+    bellChime(PENTA.E5, t + 0.10, 0.16, 0.10, 0.40);
+  }
+}
+
+// =========================================================
+// RESONANCE DETONATE — 1200-2000ms, climax resolution
+// Full chords, sub bass, descending sparkle cascades
+// =========================================================
+function playResonanceDetonate(variant) {
+  ensureAudio();
+  const t = audioCtx.currentTime;
+  flash('card-d' + variant);
+
+  if (variant === 0) {
+    // D0: Major Chord Burst — C major bloom -> descending sparkle -> sub
+    // Sub bass foundation
+    subBass(PENTA.C3, t, 1.2, 0.12);
+
+    // C major chord bloom (C4 + E4 + G4 + C5)
+    const chordNotes = [PENTA.C4, PENTA.E4, PENTA.G4, PENTA.C5];
+    chordNotes.forEach((freq) => {
+      const osc = audioCtx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      const g = audioCtx.createGain();
+      g.gain.setValueAtTime(0.001, t);
+      g.gain.linearRampToValueAtTime(0.08, t + 0.03);
+      g.gain.setValueAtTime(0.08, t + 0.20);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.80);
+      osc.connect(g); connectWithReverb(g, 0.45);
+      osc.start(t); osc.stop(t + 0.80);
+    });
+
+    // Descending sparkle arpeggio (coins falling)
+    for (let i = 0; i < 10; i++) {
+      const freq = PENTA_DOWN[i % PENTA_DOWN.length];
+      chime(freq, t + 0.25 + i * 0.06, 0.08, 0.05 - i * 0.003, 0.40);
+    }
+
+  } else if (variant === 1) {
+    // D1: Cascade Resolution — ascending tension -> chord resolve -> descending coins
+    // Ascending tension build (C4->D4->E4->G4, unresolved)
+    const tension = [PENTA.C4, PENTA.D4, PENTA.E4, PENTA.G4];
+    tension.forEach((freq, i) => {
+      chime(freq, t + i * 0.08, 0.12, 0.07, 0.25);
+    });
+
+    // Full chord resolution at peak
+    const resolveTime = t + 0.40;
+    subBass(PENTA.C3, resolveTime, 1.0, 0.10);
+    const resolve = [PENTA.C4, PENTA.E4, PENTA.G4, PENTA.C5, PENTA.E5];
+    resolve.forEach((freq) => {
+      const osc = audioCtx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      const g = audioCtx.createGain();
+      g.gain.setValueAtTime(0.001, resolveTime);
+      g.gain.linearRampToValueAtTime(0.07, resolveTime + 0.025);
+      g.gain.setValueAtTime(0.07, resolveTime + 0.25);
+      g.gain.exponentialRampToValueAtTime(0.001, resolveTime + 0.70);
+      osc.connect(g); connectWithReverb(g, 0.50);
+      osc.start(resolveTime); osc.stop(resolveTime + 0.70);
+    });
+
+    // Descending coin cascade
+    for (let i = 0; i < 12; i++) {
+      const freq = PENTA_DOWN[i % PENTA_DOWN.length];
+      sparkle(freq, resolveTime + 0.20 + i * 0.05, 0.04 - i * 0.002);
+    }
+
+  } else if (variant === 2) {
+    // D2: Harmonic Explosion — sub impact -> C major spread -> pentatonic rain
+    // Sub impact
+    subBass(PENTA.C3, t, 0.8, 0.14);
+
+    // Bright impact noise
+    const n = makeNoise(0.03);
+    const hp = audioCtx.createBiquadFilter();
+    hp.type = 'highpass'; hp.frequency.value = 2000;
+    const ng = audioCtx.createGain();
+    ng.gain.setValueAtTime(0.06, t);
+    ng.gain.exponentialRampToValueAtTime(0.001, t + 0.03);
+    n.connect(hp); hp.connect(ng); connectWithReverb(ng, 0.35);
+    n.start(t); n.stop(t + 0.03);
+
+    // Wide spread chord (staggered entry)
+    const spread = [
+      { freq: PENTA.C4, delay: 0.02 },
+      { freq: PENTA.G4, delay: 0.04 },
+      { freq: PENTA.E4, delay: 0.06 },
+      { freq: PENTA.C5, delay: 0.08 },
+      { freq: PENTA.G5, delay: 0.10 },
+    ];
+    spread.forEach(({ freq, delay }) => {
+      bellChime(freq, t + delay, 0.50, 0.07, 0.45);
+    });
+
+    // Rapid descending pentatonic rain
+    for (let i = 0; i < 13; i++) {
+      chime(PENTA_DOWN[i], t + 0.30 + i * 0.04, 0.06, 0.05 - i * 0.003, 0.35);
+    }
+
+  } else if (variant === 3) {
+    // D3: Crystal Shatter — high cluster burst -> cascading fragments -> deep resolve
+    // High cluster burst (many notes at once)
+    const cluster = [PENTA.C6, PENTA.A5, PENTA.G5, PENTA.E5, PENTA.D5];
+    cluster.forEach((freq, i) => {
+      chime(freq, t + i * 0.012, 0.15, 0.06, 0.40);
+      sparkle(freq * 2, t + i * 0.012, 0.03);
+    });
+
+    // Cascading broken-chord fragments descending
+    const fragments = [
+      PENTA.E5, PENTA.C5, PENTA.A4,
+      PENTA.G4, PENTA.E4, PENTA.D4,
+      PENTA.C4, PENTA.A3, PENTA.G3
+    ];
+    fragments.forEach((freq, i) => {
+      bellChime(freq, t + 0.20 + i * 0.08, 0.12, 0.06 - i * 0.004, 0.35);
+    });
+
+    // Deep resolve chord
+    const resolveTime = t + 0.90;
+    subBass(PENTA.C3, resolveTime, 1.0, 0.10);
+    [PENTA.C3, PENTA.G3, PENTA.C4].forEach((freq) => {
+      const osc = audioCtx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      const g = audioCtx.createGain();
+      g.gain.setValueAtTime(0.001, resolveTime);
+      g.gain.linearRampToValueAtTime(0.06, resolveTime + 0.04);
+      g.gain.setValueAtTime(0.06, resolveTime + 0.30);
+      g.gain.exponentialRampToValueAtTime(0.001, resolveTime + 0.90);
+      osc.connect(g); connectWithReverb(g, 0.50);
+      osc.start(resolveTime); osc.stop(resolveTime + 0.90);
+    });
+
+  } else if (variant === 4) {
+    // D4: Power Chord — swell -> massive open fifth -> octave cascade -> sub
+    // Swell (rising sine into chord)
+    const swell = audioCtx.createOscillator();
+    swell.type = 'sine';
+    swell.frequency.setValueAtTime(PENTA.C3, t);
+    swell.frequency.exponentialRampToValueAtTime(PENTA.C4, t + 0.25);
+    const sg = audioCtx.createGain();
+    sg.gain.setValueAtTime(0.001, t);
+    sg.gain.linearRampToValueAtTime(0.08, t + 0.25);
+    sg.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+    swell.connect(sg); connectWithReverb(sg, 0.30);
+    swell.start(t); swell.stop(t + 0.35);
+
+    // Massive open fifth chord (C3+G3+C4+G4)
+    const chordTime = t + 0.25;
+    subBass(PENTA.C3, chordTime, 1.2, 0.14);
+    const power = [PENTA.C3, PENTA.G3, PENTA.C4, PENTA.G4];
+    power.forEach((freq) => {
+      const osc = audioCtx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      const g = audioCtx.createGain();
+      g.gain.setValueAtTime(0.001, chordTime);
+      g.gain.linearRampToValueAtTime(0.08, chordTime + 0.03);
+      g.gain.setValueAtTime(0.08, chordTime + 0.30);
+      g.gain.exponentialRampToValueAtTime(0.001, chordTime + 0.90);
+      osc.connect(g); connectWithReverb(g, 0.50);
+      osc.start(chordTime); osc.stop(chordTime + 0.90);
+    });
+
+    // Octave cascade after chord
+    const cascadeNotes = [
+      PENTA.G5, PENTA.E5, PENTA.C5, PENTA.A4,
+      PENTA.G4, PENTA.E4, PENTA.C4
+    ];
+    cascadeNotes.forEach((freq, i) => {
+      chime(freq, chordTime + 0.25 + i * 0.06, 0.10, 0.05 - i * 0.004, 0.40);
+    });
+  }
+}
+</script>
+</body>
+</html>

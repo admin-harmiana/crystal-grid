@@ -1,0 +1,33 @@
+{
+  "name": "crystal-grid",
+  "version": "1.0.0",
+  "description": "Crystal Grid mobile game with streak crystal system, sound design, and haptic feedback.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "npx playwright test",
+    "test:mobile": "npx playwright test --project='iPhone 12' --project='Pixel 5'",
+    "test:desktop": "npx playwright test --project=chromium --project=webkit",
+    "serve": "npx serve src -p 3003",
+    "cap:sync": "npx cap sync",
+    "cap:ios": "npx cap open ios",
+    "cap:android": "npx cap open android"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@capacitor/android": "^6.1.1",
+    "@capacitor/cli": "^6.1.1",
+    "@capacitor/core": "^6.1.1",
+    "@capacitor/ios": "^6.1.1",
+    "@playwright/test": "^1.57.0",
+    "localtunnel": "^2.0.2"
+  },
+  "dependencies": {
+    "@capacitor/haptics": "^6.0.3"
+  }
+}
