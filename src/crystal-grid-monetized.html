@@ -1183,12 +1183,12 @@
 
     // ===== DIFFICULTY SCALING =====
     const DIFFICULTY_LEVELS = [
-      { score: 0, maxSize: 4, awkwardWeight: 0.40 },
-      { score: 500, maxSize: 4, awkwardWeight: 0.45 },
-      { score: 1500, maxSize: 5, awkwardWeight: 0.55 },
-      { score: 3000, maxSize: 5, awkwardWeight: 0.65 },
-      { score: 6000, maxSize: 5, awkwardWeight: 0.75 },
-      { score: 10000, maxSize: 5, awkwardWeight: 0.80 },
+      { score: 0, maxSize: 4, awkwardWeight: 0.40, fitBias: 0.03 },
+      { score: 500, maxSize: 4, awkwardWeight: 0.45, fitBias: 0.04 },
+      { score: 1500, maxSize: 5, awkwardWeight: 0.55, fitBias: 0.05 },
+      { score: 3000, maxSize: 5, awkwardWeight: 0.65, fitBias: 0.06 },
+      { score: 6000, maxSize: 5, awkwardWeight: 0.75, fitBias: 0.07 },
+      { score: 10000, maxSize: 5, awkwardWeight: 0.80, fitBias: 0.08 },
     ];
     const AWKWARD_NAMES = new Set(['l3', 'j3', 's3', 'l3r', 't4', 's4', 'z4', 'l4', 'j4']);
 
@@ -1627,6 +1627,25 @@ Thanks for playing.`
     }
 
     // ===== PIECE GENERATION =====
+    function weightedPick(pieces, weights) {
+      let total = 0;
+      for (let i = 0; i < weights.length; i++) total += weights[i];
+      let r = Math.random() * total;
+      for (let i = 0; i < pieces.length; i++) {
+        r -= weights[i];
+        if (r <= 0) return pieces[i];
+      }
+      return pieces[pieces.length - 1];
+    }
+
+    function fitScoredWeights(pieces, fitBias) {
+      return pieces.map(p => {
+        const base = PIECE_WEIGHTS[p.name] || 1;
+        const fit = countPlacements(p);
+        return base * (1 + fit * fitBias);
+      });
+    }
+
     function pickRandomShape() {
       const diff = getDifficulty();
 
@@ -1641,19 +1660,12 @@ Thanks for playing.`
       if (Math.random() < diff.awkwardWeight) {
         const awkward = eligible.filter(p => AWKWARD_NAMES.has(p.name));
         if (awkward.length > 0) {
-          return awkward[Math.floor(Math.random() * awkward.length)];
+          return weightedPick(awkward, fitScoredWeights(awkward, diff.fitBias));
         }
       }
 
-      // Normal weighted pick from eligible pieces
-      let totalWeight = 0;
-      for (const piece of eligible) totalWeight += (PIECE_WEIGHTS[piece.name] || 1);
-      let r = Math.random() * totalWeight;
-      for (const piece of eligible) {
-        r -= (PIECE_WEIGHTS[piece.name] || 1);
-        if (r <= 0) return piece;
-      }
-      return eligible[0];
+      // Normal weighted pick from eligible pieces, biased by fit
+      return weightedPick(eligible, fitScoredWeights(eligible, diff.fitBias));
     }
 
     function pickColor(existing) {
@@ -1678,6 +1690,10 @@ Thanks for playing.`
 
     function advanceTray() {
       trayPieces = nextTrayPieces;
+      // Soft re-roll: if no piece in the tray fits anywhere, regenerate once
+      if (!trayPieces.some(p => canPlacePieceAnywhere(p))) {
+        trayPieces = generatePieceSet();
+      }
       nextTrayPieces = generatePieceSet();
     }
 
@@ -1766,6 +1782,16 @@ Thanks for playing.`
       const cx = touch.clientX;
       const cy = touch.clientY;
 
+      if (isGhostOutsideGrid(cx, cy, cachedCellPlusGap / 2)) {
+        if (stickyAnchor) {
+          stickyAnchor = null;
+          stickyFingerPos = null;
+          clearPlacementPreview();
+        }
+        positionGhost(cx, cy);
+        return;
+      }
+
       // Always try to find a new anchor at current position
       const newAnchor = getAnchorFromPoint(cx, cy);
       const piece = trayPieces[dragPieceIndex];
@@ -1846,6 +1872,29 @@ Thanks for playing.`
         x: Math.max(0, Math.min(GRID_SIZE - pw, ax)),
         y: Math.max(0, Math.min(GRID_SIZE - ph, ay))
       };
+    }
+
+    function isGhostOutsideGrid(cx, cy, margin = 0) {
+      if (!cachedGridRect) updateGridMetrics();
+      if (!cachedGridRect) return true;
+      const rect = cachedGridRect;
+      const ghost = document.getElementById('drag-ghost');
+      const gw = ghost.offsetWidth;
+      const gh = ghost.offsetHeight;
+      const ghostLeft = cx - gw / 2;
+      const ghostTop = cy + DRAG_OFFSET_Y - gh / 2;
+      const ghostRight = ghostLeft + gw;
+      const ghostBottom = ghostTop + gh;
+      const gridLeft = rect.left + GRID_PADDING;
+      const gridTop = rect.top + GRID_PADDING;
+      const gridRight = rect.right - GRID_PADDING;
+      const gridBottom = rect.bottom - GRID_PADDING;
+      return (
+        ghostRight < gridLeft - margin ||
+        ghostLeft > gridRight + margin ||
+        ghostBottom < gridTop - margin ||
+        ghostTop > gridBottom + margin
+      );
     }
 
     function endDrag(e) {
@@ -1937,6 +1986,14 @@ Thanks for playing.`
         for (let x = 0; x < GRID_SIZE; x++)
           if (canPlacePiece(piece, x, y)) return true;
       return false;
+    }
+
+    function countPlacements(piece) {
+      let count = 0;
+      for (let y = 0; y < GRID_SIZE; y++)
+        for (let x = 0; x < GRID_SIZE; x++)
+          if (canPlacePiece(piece, x, y)) count++;
+      return count;
     }
 
     function tryPlacePiece(idx, sx, sy) {
