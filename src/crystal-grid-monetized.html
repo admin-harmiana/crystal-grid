@@ -870,6 +870,60 @@
       gap: 10px;
       margin-top: 12px;
     }
+    /* ===== ADS (MONETIZED BUILD) ===== */
+    #ad-banner {
+      width: 100%;
+      height: 60px;
+      margin-top: 10px;
+      background: linear-gradient(90deg, rgba(40,40,60,0.8), rgba(20,20,35,0.8));
+      border: 1px solid var(--grid-border);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    #rewarded-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(8, 6, 16, 0.96);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 70;
+      gap: 12px;
+      padding: 20px;
+    }
+    #rewarded-overlay.hidden { display: none; }
+    .rewarded-card {
+      width: 320px;
+      background: rgba(20, 16, 30, 0.95);
+      border: 1px solid var(--grid-border);
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+      box-shadow: 0 0 30px rgba(0,0,0,0.4);
+    }
+    .rewarded-title {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .rewarded-text {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text-secondary);
+    }
+    .rewarded-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+      justify-content: center;
+    }
     .toggle {
       width: 48px;
       height: 28px;
@@ -971,6 +1025,7 @@
       </div>
       <div class="tray-wrapper">
         <div id="piece-tray"></div>
+        <div id="ad-banner">Ad Banner</div>
       </div>
     </div>
 
@@ -1066,12 +1121,29 @@
       </div>
     </div>
 
+    <!-- REWARDED OVERLAY -->
+    <div id="rewarded-overlay" class="hidden">
+      <div class="rewarded-card">
+        <div class="rewarded-title">Second Chance</div>
+        <div class="rewarded-text">Watch a short ad to continue with a refreshed board.</div>
+        <div class="rewarded-actions">
+          <button class="btn btn-small" id="rewarded-watch-btn">Watch Ad</button>
+          <button class="btn btn-small" id="rewarded-skip-btn">No Thanks</button>
+        </div>
+      </div>
+    </div>
+
     <!-- DRAG GHOST -->
     <div id="drag-ghost"></div>
   </div>
 
   <script>
     // ===== CONSTANTS =====
+    const MONETIZED_BUILD = true;
+    const AD_CONFIG = {
+      bannerEnabled: true,
+      rewardedEnabled: true
+    };
     const GRID_SIZE = 8;
     const COLORS = ['ruby', 'sapphire', 'emerald', 'amethyst'];
     const COLOR_HEX = { ruby: '#e91e63', sapphire: '#1565c0', emerald: '#2e7d32', amethyst: '#7b1fa2' };
@@ -1173,6 +1245,7 @@
       showScreen('menu');
       initHapticSwitch();
       armInitialAudioUnlock();
+      if (MONETIZED_BUILD) initAds();
 
       document.getElementById('play-btn').addEventListener('click', startGame);
       document.getElementById('play-again-btn').addEventListener('click', startGame);
@@ -1192,6 +1265,14 @@
       document.getElementById('legal-close-btn').addEventListener('click', closeLegal);
       document.getElementById('legal-open-url-btn').addEventListener('click', () => {
         if (currentLegalUrl) openExternal(currentLegalUrl);
+      });
+      document.getElementById('rewarded-watch-btn').addEventListener('click', () => {
+        hideRewardedPrompt();
+        showRewardedAd(() => reviveFromAd());
+      });
+      document.getElementById('rewarded-skip-btn').addEventListener('click', () => {
+        hideRewardedPrompt();
+        showGameOverScreen();
       });
 
       document.addEventListener('touchmove', handleDrag, { passive: false });
@@ -1238,6 +1319,61 @@
       if (name === 'game') {
         requestAnimationFrame(() => updateGridMetrics());
       }
+    }
+
+    // ===== ADS (MONETIZED BUILD) =====
+    let rewardedUsed = false;
+    function initAds() {
+      const banner = document.getElementById('ad-banner');
+      if (!AD_CONFIG.bannerEnabled && banner) banner.style.display = 'none';
+    }
+    function showRewardedPrompt() {
+      if (!AD_CONFIG.rewardedEnabled || rewardedUsed) return false;
+      document.getElementById('rewarded-overlay').classList.remove('hidden');
+      return true;
+    }
+    function hideRewardedPrompt() {
+      document.getElementById('rewarded-overlay').classList.add('hidden');
+    }
+    function showRewardedAd(onComplete) {
+      // TODO: Replace with real rewarded ad SDK integration
+      setTimeout(() => {
+        if (onComplete) onComplete();
+      }, 300);
+    }
+    function reviveFromAd() {
+      rewardedUsed = true;
+      gameActive = true;
+      isAnimating = false;
+      isDragging = false;
+      clearPlacementPreview();
+      // Remove some blocks to create space, then refresh tray
+      const filled = [];
+      for (let y = 0; y < GRID_SIZE; y++)
+        for (let x = 0; x < GRID_SIZE; x++)
+          if (grid[y][x] !== 0) filled.push({ x, y });
+      for (let i = 0; i < Math.min(10, filled.length); i++) {
+        const idx = Math.floor(Math.random() * filled.length);
+        const c = filled.splice(idx, 1)[0];
+        grid[c.y][c.x] = 0;
+      }
+      renderGrid();
+      advanceTray();
+      renderTray();
+      showScreen('game');
+    }
+    function showGameOverScreen() {
+      const isNewBest = score >= highScore && score > 0;
+      const titleEl = document.getElementById('gameover-title');
+      titleEl.textContent = isNewBest ? 'NEW BEST!' : 'GAME OVER';
+      titleEl.className = 'gameover-title' + (isNewBest ? ' new-best' : '');
+      if (isNewBest) playSound('highscore');
+      document.getElementById('gameover-score').textContent = score.toLocaleString();
+      document.getElementById('stat-lines').textContent = stats.lines;
+      document.getElementById('stat-resonances').textContent = stats.resonances;
+      document.getElementById('stat-pieces').textContent = stats.pieces;
+      document.getElementById('stat-best-chain').textContent = stats.bestChain;
+      showScreen('gameover');
     }
 
     function openSettings() { document.getElementById('settings-overlay').classList.remove('hidden'); }
@@ -1630,16 +1766,6 @@ Thanks for playing.`
       const cx = touch.clientX;
       const cy = touch.clientY;
 
-      if (isGhostOutsideGrid(cx, cy, cachedCellPlusGap / 2)) {
-        if (stickyAnchor) {
-          stickyAnchor = null;
-          stickyFingerPos = null;
-          clearPlacementPreview();
-        }
-        positionGhost(cx, cy);
-        return;
-      }
-
       // Always try to find a new anchor at current position
       const newAnchor = getAnchorFromPoint(cx, cy);
       const piece = trayPieces[dragPieceIndex];
@@ -1720,29 +1846,6 @@ Thanks for playing.`
         x: Math.max(0, Math.min(GRID_SIZE - pw, ax)),
         y: Math.max(0, Math.min(GRID_SIZE - ph, ay))
       };
-    }
-
-    function isGhostOutsideGrid(cx, cy, margin = 0) {
-      if (!cachedGridRect) updateGridMetrics();
-      if (!cachedGridRect) return true;
-      const rect = cachedGridRect;
-      const ghost = document.getElementById('drag-ghost');
-      const gw = ghost.offsetWidth;
-      const gh = ghost.offsetHeight;
-      const ghostLeft = cx - gw / 2;
-      const ghostTop = cy + DRAG_OFFSET_Y - gh / 2;
-      const ghostRight = ghostLeft + gw;
-      const ghostBottom = ghostTop + gh;
-      const gridLeft = rect.left + GRID_PADDING;
-      const gridTop = rect.top + GRID_PADDING;
-      const gridRight = rect.right - GRID_PADDING;
-      const gridBottom = rect.bottom - GRID_PADDING;
-      return (
-        ghostRight < gridLeft - margin ||
-        ghostLeft > gridRight + margin ||
-        ghostBottom < gridTop - margin ||
-        ghostTop > gridBottom + margin
-      );
     }
 
     function endDrag(e) {
@@ -2591,7 +2694,7 @@ Thanks for playing.`
     function checkGameOver() {
       const unplaced = trayPieces.filter(p => !p.placed);
       if (unplaced.length === 0) return;
-      if (!unplaced.some(p => canPlacePieceAnywhere(p))) gameOver();
+      if (!unplaced.some(p => canPlacePieceAnywhere(p))) gameOver('no_moves');
     }
 
     function checkPerfectClear() {
@@ -2609,7 +2712,7 @@ Thanks for playing.`
       }
     }
 
-    function gameOver() {
+    function gameOver(reason = '') {
       gameActive = false;
       isDragging = false;
       dragPieceIndex = -1;
@@ -2625,17 +2728,8 @@ Thanks for playing.`
       haptic([100, 50, 100, 50, 100]);
 
       setTimeout(() => {
-        const isNewBest = score >= highScore && score > 0;
-        const titleEl = document.getElementById('gameover-title');
-        titleEl.textContent = isNewBest ? 'NEW BEST!' : 'GAME OVER';
-        titleEl.className = 'gameover-title' + (isNewBest ? ' new-best' : '');
-        if (isNewBest) playSound('highscore');
-        document.getElementById('gameover-score').textContent = score.toLocaleString();
-        document.getElementById('stat-lines').textContent = stats.lines;
-        document.getElementById('stat-resonances').textContent = stats.resonances;
-        document.getElementById('stat-pieces').textContent = stats.pieces;
-        document.getElementById('stat-best-chain').textContent = stats.bestChain;
-        showScreen('gameover');
+        if (reason === 'no_moves' && showRewardedPrompt()) return;
+        showGameOverScreen();
       }, 500);
     }
 
