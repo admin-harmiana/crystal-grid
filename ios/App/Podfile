@@ -19,6 +19,10 @@ target 'App' do
   # Add your Pods here
 end
 
+target 'App Monetized' do
+  capacitor_pods
+end
+
 post_install do |installer|
   assertDeploymentTarget(installer)
 end
