@@ -8,6 +8,7 @@ Crystal Grid is a mobile game built as a single-file PWA with vanilla JavaScript
 ## Quick Reference
 - **Spec**: `docs/STREAK_CRYSTAL_V2.md` — crystal system design document
 - **Code**: `src/crystal-grid.html` — entire game in one file (HTML + CSS + JS)
+- **Monetized**: `src/crystal-grid-monetized.html` — same game with ad integration (banner + rewarded ads)
 - **Sound**: `src/sound-test.html` — sound system experiments
 
 ## Commands
@@ -33,6 +34,8 @@ npm run cap:android   # Open Android project in Android Studio
 - Game state managed through a global state object
 - Touch/swipe detection
 - localStorage for persistence (high score, settings, unlocks)
+
+**Two-file rule**: `crystal-grid.html` (base) and `crystal-grid-monetized.html` (ads) must stay in sync. Any change that is not monetization-specific (gameplay, visuals, audio, haptics, UI, bug fixes) **must be applied to both files**. The monetized file is the base file plus ad-only additions (ad banner, rewarded overlay, `MONETIZED_BUILD` flag, `AD_CONFIG`, ad functions, and the `gameOver` reason parameter). Never let the base game logic diverge between the two files.
 
 ## Development Protocol
 
